@@ -1,20 +1,50 @@
-from flask import Blueprint, render_template, jsonify, redirect, url_for
+from flask import Blueprint, render_template, jsonify, redirect, url_for, session
 from exts import mail, db
 from flask_mail import Message
 from flask import request
 import string
 import random
 from models import EmailCaptchaModel, UserModel
-from .forms import RegisterForm
-from  werkzeug.security import generate_password_hash
+from .forms import RegisterForm, LoginForm
+from  werkzeug.security import generate_password_hash, check_password_hash
 
 # 都要以 /auth开头
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
-@bp.route("/login")
+# GET:返回模板
+# POST:提交数据进行登录操作
+@bp.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
+    if request.method == "GET":
+        return render_template("login.html")
+    else:
+        form = LoginForm(request.form)
+        if form.validate():
+            email = form.email.data
+            password = form.password.data
+            # 存入到数据库的秘密是加密后的 先用邮箱去找用户进行查询
+            user = UserModel.query.filter_by(email=email).first()
+            # 如果没有用户说明邮箱不在数据库
+            # 再次给它返回页面
+            if not user:
+                print("邮箱再数据库不存在!")
+                return redirect(url_for("auth.login"))
+            # 第一个加密后 第二个原密码
+            if check_password_hash(user.password, password):
+                # cookie
+                # 不适合存储太多数据
+                # 一般用来存放登录授权的东西
+                # flask中的session 是经过加密后存储再cookie中的
+                session['user_id'] = user.id
+                return redirect("/")
+            else:
+                print("密码错误!")
+                return redirect(url_for("auth.login"))
+        else:
+            print(form.errors)
+            return redirect(url_for("auth.login"))
+
 
 
 # 现在视图函数只能是GET/POST请求 用其他请求会出现405错误
