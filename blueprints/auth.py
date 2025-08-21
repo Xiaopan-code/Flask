@@ -28,6 +28,7 @@ def get_email_captcha():
     source = string.digits*4
     captcha = random.sample(source, 4)
     captcha = "".join(captcha)
+    # I/O: Input/Output 耗费事件太长了 放队列速度更快
     message = Message(subject="注册验证码", recipients=[email], body=f"您的验证码是:{captcha}")
     mail.send(message)
     # 用数据库方式存储
