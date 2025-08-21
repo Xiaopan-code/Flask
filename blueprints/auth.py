@@ -14,7 +14,7 @@ bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 @bp.route("/login")
 def login():
-    return "这是登录页面"
+    return render_template("login.html")
 
 
 # 现在视图函数只能是GET/POST请求 用其他请求会出现405错误
