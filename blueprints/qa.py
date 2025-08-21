@@ -5,4 +5,4 @@ bp = Blueprint('qa', __name__, url_prefix='/')
 
 @bp.route('/')
 def index():
-    pass
+    return "欢迎来到问答平台首页"
