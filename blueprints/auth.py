@@ -18,6 +18,8 @@ def login():
 @bp.route("/register")
 def register():
     # 验证用户提交的邮箱和验证码是否对应且正确
+    # 表单验证: flask-wtf   wtf->wtforms
+
     return render_template("register.html")
 
 # bp.route: 如果没有指定methods参数，就默认是GET请求
