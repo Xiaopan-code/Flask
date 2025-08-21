@@ -1,10 +1,12 @@
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, render_template, jsonify, redirect, url_for
 from exts import mail, db
 from flask_mail import Message
 from flask import request
 import string
 import random
-from models import EmailCaptchaModel
+from models import EmailCaptchaModel, UserModel
+from .forms import RegisterForm
+from  werkzeug.security import generate_password_hash
 
 # 都要以 /auth开头
 bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -12,15 +14,33 @@ bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 @bp.route("/login")
 def login():
-    pass
+    return "这是登录页面"
 
 
-@bp.route("/register")
+# 现在视图函数只能是GET/POST请求 用其他请求会出现405错误
+# GER: 从服务器上获取数据
+# POST: 将客户端数据提交给服务器
+@bp.route("/register", methods=["GET", "POST"])
 def register():
-    # 验证用户提交的邮箱和验证码是否对应且正确
-    # 表单验证: flask-wtf   wtf->wtforms
+    if request.method == "GET":
+        return render_template("register.html")
+    else:
+        # 验证用户提交的邮箱和验证码是否对应且正确
+        # 表单验证: flask-wtf   wtf->wtforms
+        form = RegisterForm(request.form)
+        form.validate()
+        if form.validate():
+            email = form.email.data
+            username = form.username.data
+            password = form.password.data
+            user = UserModel(email=email, username=username, password=generate_password_hash(password))
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for("auth.login"))
+        else:
+            print(form.errors)
+            return redirect(url_for("auth.register"))
 
-    return render_template("register.html")
 
 # bp.route: 如果没有指定methods参数，就默认是GET请求
 @bp.route("/captcha/email")

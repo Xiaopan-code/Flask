@@ -15,7 +15,7 @@ class RegisterForm(wtforms.Form):
     # 密码最少6位 最大20位
     password = wtforms.StringField(validators=[Length(min=6, max=20, message="密码格式错误!")])
     # 确定密码用上EqualTo 指定验证字段和上面的密码相等
-    password_confirm = wtforms.StringField(validators=[EqualTo("password")])
+    password_confirm = wtforms.StringField(validators=[EqualTo("password", message="两次密码不一致!")])
 
     # 自定义验证
     # 邮箱是否被注册
