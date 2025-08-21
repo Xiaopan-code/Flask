@@ -1,49 +1,24 @@
-function bindEmailCaptchaClick() {
-  $("#captcha-btn").click(function (event) {
-      // this: 代表当前按钮的 jQuery 对象
-      var $this = $(this);
-      // 阻止默认的事件
-      event.preventDefault();
+// 整个网页都加载后再去执行函数
+$(function (){
+    $("#captcha-btn").click(function(event){
+        // 阻止默认的事件
+        event.preventDefault();
 
-      var email = $("input[name='email']").val();
-      $.ajax({
-          url: "/auth/captcha/email?email=" + email,
-          method: "GET",
-          success: function (result) {
-              var code = result['code'];
-              if (code == 200) {
-                  var countdown = 60;
-                  // 开始倒计时之前，取消按钮的点击事件
-                  $this.off("click");
-                  var timer = setInterval(function () {
-                      $this.text(countdown);
-                      countdown -= 1;
-                      // 倒计时结束时执行
-                      if (countdown <= 0) {
-                          // 清除定时器
-                          clearInterval(timer);
-                          // 按钮文本恢复原样
-                          $this.text("获取验证码");
-                          // 重新绑定点击事件
-                          bindEmailCaptchaClick();
-                      }
-                  }, 1000);
-                   $("#success-message").text("邮箱验证码发送成功!").show();
-                    setTimeout(function () {
-                        $("#success-message").hide(); // 3秒后隐藏消息
-                    }, 3000);
-              } else {
-                  alert(result['message']);
-              }
-          },
-          error: function (error) {
-              console.log(error);
-          }
-      });
-  });
-}
+        var email = $("input[name='email']").val();
 
-// 整个网页加载完成后再执行
-$(function () {
-  bindEmailCaptchaClick();
+        // 新版jQuery可以省略method，直接用type
+        // 也可以使用更简洁的$.get()方法
+        $.get("/auth/captcha/email", {email: email})
+            .done(function(result){
+                if(result.code === 200){
+                    alert("邮箱验证码发送成功");
+                }else{
+                    alert(result.message);
+                }
+            })
+            .fail(function(error){
+                console.log("请求失败:", error);
+                alert("获取验证码失败，请稍后重试");
+            });
+    });
 });

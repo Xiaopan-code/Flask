@@ -20,7 +20,7 @@ def register():
     # 验证用户提交的邮箱和验证码是否对应且正确
     return render_template("register.html")
 
-
+# bp.route: 如果没有指定methods参数，就默认是GET请求
 @bp.route("/captcha/email")
 def get_email_captcha():
     # 发送邮箱获得验证码
