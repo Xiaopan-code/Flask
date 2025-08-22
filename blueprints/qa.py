@@ -2,6 +2,7 @@ from flask import Blueprint, request, render_template, g, redirect, url_for
 from .forms import QuestionForm
 from models import QuestionModel
 from exts import db
+from decorators import login_required
 
 bp = Blueprint('qa', __name__, url_prefix='/')
 
@@ -14,6 +15,7 @@ def index():
 # GET:渲染模板
 # POST:把数据存储到数据库
 @bp.route('/qa/public', methods=['GET', 'POST'])
+@login_required
 def public_question():
     if request.method == 'GET':
         return render_template("public_question.html")
