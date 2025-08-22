@@ -45,5 +45,5 @@ class AnswerModel(db.Model):
 
     # 关系
     question = db.relationship('QuestionModel', backref=db.backref('answers', order_by=create_time.desc()))
-    author = db.relationship('QuestionModel', backref=db.backref('answers'))
+    author = db.relationship('UserModel', backref=db.backref('answers'))
 

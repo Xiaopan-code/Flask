@@ -1,6 +1,6 @@
 import wtforms
 from flask_wtf import FlaskForm
-from wtforms.validators import Email, Length, EqualTo
+from wtforms.validators import Email, Length, EqualTo, InputRequired
 from models import UserModel, EmailCaptchaModel
 from exts import db
 
@@ -49,3 +49,9 @@ class LoginForm(wtforms.Form):
 class QuestionForm(wtforms.Form):
     title = wtforms.StringField(validators=[Length(min=3, max=100, message="标题长度错误!")])
     content = wtforms.StringField(validators=[Length(min=3, message="内容格式错误!")])
+
+
+class AnswerForm(wtforms.Form):
+    content = wtforms.StringField(validators=[Length(min=3, message="内容格式错误!")])
+    question_id = wtforms.IntegerField(validators=[InputRequired(message="必须要输入问题id!")])
+
