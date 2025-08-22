@@ -65,3 +65,14 @@ def public_answer():
     else:
         print(form.errors)
         return redirect(url_for('qa.qa_detail', qa_id=request.get('question_id')))
+
+
+@bp.route('/search')
+def search():
+    # /search?q=flask
+    # /search/<q>
+    # post, request.form
+    q = request.args.get('q')
+    # 把标题中包含q这个关键字的问答/问题提取出来
+    questions = QuestionModel.query.filter(QuestionModel.title.contains(q)).all()
+    return render_template('index.html', questions=questions)
