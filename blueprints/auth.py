@@ -6,7 +6,7 @@ import string
 import random
 from models import EmailCaptchaModel, UserModel
 from .forms import RegisterForm, LoginForm
-from  werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # 都要以 /auth开头
 bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -20,7 +20,7 @@ def login():
         return render_template("login.html")
     else:
         form = LoginForm(request.form)
-        if form.validate():
+        if form.validate_on_submit():
             email = form.email.data
             password = form.password.data
             # 存入到数据库的秘密是加密后的 先用邮箱去找用户进行查询
@@ -59,7 +59,7 @@ def register():
         # 表单验证: flask-wtf   wtf->wtforms
         form = RegisterForm(request.form)
         form.validate()
-        if form.validate():
+        if form.validate_on_submit():
             email = form.email.data
             username = form.username.data
             password = form.password.data
