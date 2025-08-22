@@ -31,3 +31,19 @@ class QuestionModel(db.Model):
     #  外键
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     author = db.relationship('UserModel', backref=db.backref('questions', lazy='dynamic'))
+
+
+class AnswerModel(db.Model):
+    __tablename__ = 'answers'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    content = db.Column(db.Text, nullable=False)
+    create_time = db.Column(db.DateTime, default=datetime.now)
+
+    # 外键
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'))
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    # 关系
+    question = db.relationship('QuestionModel', backref=db.backref('answers', order_by=create_time.desc()))
+    author = db.relationship('QuestionModel', backref=db.backref('answers'))
+
