@@ -72,6 +72,12 @@ def register():
             return redirect(url_for("auth.register"))
 
 
+@bp.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
+
+
 # bp.route: 如果没有指定methods参数，就默认是GET请求
 @bp.route("/captcha/email")
 def get_email_captcha():
