@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, g, redirect, url_for
 from .forms import QuestionForm
-from models import Question
+from models import QuestionModel
 from exts import db
 
 bp = Blueprint('qa', __name__, url_prefix='/')
