@@ -9,7 +9,8 @@ bp = Blueprint('qa', __name__, url_prefix='/')
 
 @bp.route('/')
 def index():
-    return "欢迎来到问答平台首页"
+    questions = QuestionModel.query.order_by(QuestionModel.create_time.desc()).all()
+    return render_template("index.html", questions=questions)
 
 
 # GET:渲染模板
@@ -30,10 +31,10 @@ def public_question():
         # 仅对表单数据进行验证，不判断请求方法
         # 无论请求是 GET、POST 还是其他方法，只要调用就会执行验证逻辑
         # 通常用于需要在非 POST 请求中进行表单验证的特殊场景
-        if form.validate_on_submit():
+        if form.validate():
             title = form.title.data
             content = form.content.data
-            question = Question(title=title, content=content, author=g.user)
+            question = QuestionModel(title=title, content=content, author=g.user)
             db.session.add(question)
             db.session.commit()
             # todo: 跳转到问答的详情页面

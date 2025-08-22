@@ -1,4 +1,5 @@
 import wtforms
+from flask_wtf import FlaskForm
 from wtforms.validators import Email, Length, EqualTo
 from models import UserModel, EmailCaptchaModel
 from exts import db

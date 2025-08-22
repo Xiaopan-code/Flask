@@ -20,7 +20,7 @@ def login():
         return render_template("login.html")
     else:
         form = LoginForm(request.form)
-        if form.validate_on_submit():
+        if form.validate():
             email = form.email.data
             password = form.password.data
             # 存入到数据库的秘密是加密后的 先用邮箱去找用户进行查询
@@ -45,8 +45,6 @@ def login():
             print(form.errors)
             return redirect(url_for("auth.login"))
 
-
-
 # 现在视图函数只能是GET/POST请求 用其他请求会出现405错误
 # GER: 从服务器上获取数据
 # POST: 将客户端数据提交给服务器
@@ -59,7 +57,7 @@ def register():
         # 表单验证: flask-wtf   wtf->wtforms
         form = RegisterForm(request.form)
         form.validate()
-        if form.validate_on_submit():
+        if form.validate():
             email = form.email.data
             username = form.username.data
             password = form.password.data
